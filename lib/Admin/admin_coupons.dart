@@ -33,14 +33,14 @@ class _AdminCouponsPageState extends State<AdminCouponsPage> {
     final TextEditingController expiryController =
         TextEditingController(text: coupon?["expiry"] ?? "");
 
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(coupon == null ? "Add Coupon" : "Edit Coupon"),
         content: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -92,7 +92,7 @@ class _AdminCouponsPageState extends State<AdminCouponsPage> {
           ElevatedButton(
             child: Text(coupon == null ? "Add" : "Update"),
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              if (formKey.currentState!.validate()) {
                 if (coupon == null) {
                   // Add new coupon
                   setState(() {

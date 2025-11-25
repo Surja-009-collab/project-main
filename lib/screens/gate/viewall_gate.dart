@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'gate_details.dart';
 
 class ViewAllGatePage extends StatefulWidget {
-  const ViewAllGatePage({Key? key}) : super(key: key);
+  const ViewAllGatePage({super.key});
 
   @override
   State<ViewAllGatePage> createState() => _ViewAllGatePageState();

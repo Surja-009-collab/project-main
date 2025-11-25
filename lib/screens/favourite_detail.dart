@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/Authentication/auth_state.dart';
 import 'package:project/screens/bookvenue.dart';
 
 class FavouriteDetailPage extends StatelessWidget {
@@ -53,14 +54,17 @@ class FavouriteDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-                     onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VenueBookingPage(),
-      ),
-    );
-  },
+              onPressed: () {
+                if (AuthState.isLoggedIn.value) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const VenueBookingPage()),
+                  );
+                } else {
+                  Navigator.pushReplacementNamed(context, '/login');
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF8F5CFF),
                 minimumSize: const Size(double.infinity, 50),

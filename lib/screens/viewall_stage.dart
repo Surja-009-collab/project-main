@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project/screens/stage_detail.dart';
 
 class AllStagesPage extends StatefulWidget {
-  const AllStagesPage({Key? key}) : super(key: key);
+  const AllStagesPage({super.key});
 
   @override
   State<AllStagesPage> createState() => _AllStagesPageState();

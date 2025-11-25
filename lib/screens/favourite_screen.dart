@@ -7,7 +7,7 @@ class FavouritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     // Dummy favourite data
     final favourites = [
@@ -26,7 +26,7 @@ class FavouritesPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: scaffoldKey,
       drawer: const AppDrawer(),
       appBar: AppBar(
         // title: const Text('My Favourites'),
@@ -51,7 +51,7 @@ class FavouritesPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.menu, color: Colors.black87),
             onPressed: () {
-                _scaffoldKey.currentState?.openDrawer();
+                scaffoldKey.currentState?.openDrawer();
             },
           ),
           const SizedBox(width: 8),

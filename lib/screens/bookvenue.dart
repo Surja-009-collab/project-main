@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class VenueBookingPage extends StatefulWidget {
   const VenueBookingPage({super.key});
@@ -47,7 +49,7 @@ class _VenueBookingPageState extends State<VenueBookingPage> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(primary: Color(0xFF8F5CFF)),
-            dialogBackgroundColor: Colors.white,
+            dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -312,12 +314,35 @@ class _VenueBookingPageState extends State<VenueBookingPage> {
 
               // Book Now Button
               _HoverButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Process booking
+                onPressed: () async {
+                  if (!_formKey.currentState!.validate()) return;
+
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) =>
+                        const Center(child: CircularProgressIndicator()),
+                  );
+
+                  try {
+                    final callable = FirebaseFunctions.instance
+                        .httpsCallable('createBooking');
+                    await callable.call({
+                      'bookingNo': _bookingNoController.text.trim(),
+                      'user': _nameController.text.trim(),
+                      'phone': _mobileController.text.trim(),
+                      'event': _selectedEventType,
+                      'planner': _selectedPlanner,
+                      'date': _selectedDate?.toIso8601String(),
+                      'amount': _amountController.text.trim(),
+                      'coupon': _couponController.text.trim(),
+                    });
+                    if (mounted) Navigator.of(context).pop();
+                    if (!mounted) return;
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text('Booking confirmed successfully!'),
+                        content: const Text('Booking created. Await approval.'),
                         backgroundColor: Colors.green[600],
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
@@ -325,13 +350,20 @@ class _VenueBookingPageState extends State<VenueBookingPage> {
                         ),
                       ),
                     );
+                    Navigator.pop(context);
+                  } catch (e) {
+                    if (mounted) Navigator.of(context).pop();
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to create booking: $e')),
+                    );
                   }
                 },
+                isLarge: true,
                 child: const Text(
                   'Confirm Booking',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                isLarge: true,
               ),
               const SizedBox(height: 20),
             ],
@@ -378,7 +410,7 @@ class _VenueBookingPageState extends State<VenueBookingPage> {
     required String? Function(String?) validator,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.grey[600]),
@@ -473,7 +505,7 @@ class _HoverButtonState extends State<_HoverButton> {
                 ? Colors.white
                 : const Color.fromARGB(255, 151, 95, 236),
             borderRadius: BorderRadius.circular(widget.isLarge ? 12 : 8),
-            border: Border.all(color: const Color(0xFF85CFF), width: 2),
+            border: Border.all(color: const Color(0x0ff85cff), width: 2),
             boxShadow: _isHovering
                 ? [
                     BoxShadow(

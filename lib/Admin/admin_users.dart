@@ -24,14 +24,14 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
         TextEditingController(text: user?["email"] ?? "");
     String selectedRole = user?["role"] ?? "User";
 
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(user == null ? "Add User" : "Edit User"),
         content: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -55,7 +55,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                 },
               ),
               DropdownButtonFormField<String>(
-                value: selectedRole,
+                initialValue: selectedRole,
                 items: const [
                   DropdownMenuItem(value: "User", child: Text("User")),
                   DropdownMenuItem(value: "Planner", child: Text("Planner")),
@@ -76,7 +76,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
           ElevatedButton(
             child: Text(user == null ? "Add" : "Update"),
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              if (formKey.currentState!.validate()) {
                 setState(() {
                   if (user == null) {
                     // Add new user

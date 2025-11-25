@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/Authentication/auth_state.dart';
+import 'package:project/services/auth_service.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -28,7 +29,8 @@ class AppDrawer extends StatelessWidget {
                   backgroundImage: isLoggedIn
                       ? const AssetImage("assets/images/profile.jpg")
                       : null,
-                  child: !isLoggedIn ? const Icon(Icons.person, size: 40) : null,
+                  child:
+                      !isLoggedIn ? const Icon(Icons.person, size: 40) : null,
                 ),
                 decoration: BoxDecoration(color: Colors.blue.shade700),
               ),
@@ -94,7 +96,8 @@ class AppDrawer extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
                   title: const Text("Logout"),
-                  onTap: () {
+                  onTap: () async {
+                    await AuthService.instance.logout();
                     AuthState.logout();
                     Navigator.pop(context);
                   },

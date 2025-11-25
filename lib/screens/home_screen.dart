@@ -1,19 +1,18 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:project/screens/category_details.dart';
+import 'package:project/screens/decoration/viewall_decoration.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project/screens/drawer.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:project/screens/gate/viewall_gate.dart';
+import 'package:project/screens/mandap/viewall_mandap.dart';
 import 'package:project/screens/venue_details.dart';
-import 'package:project/screens/category_details.dart';
 import 'package:project/screens/viewall_stage.dart';
 import 'package:project/screens/viewall_venue.dart';
-import 'package:project/screens/mandap/viewall_mandap.dart';
-import 'package:project/screens/gate/viewall_gate.dart';
-import 'package:project/screens/decoration/viewall_decoration.dart';
-
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -64,7 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               TextSpan(text: 'E', style: TextStyle(color: Color(0xFF23223A))),
               TextSpan(text: 'v', style: TextStyle(color: Color(0xFF1CCFCF))),
-              TextSpan(text: 'entify', style: TextStyle(color: Color(0xFF23223A))),
+              TextSpan(
+                  text: 'entify', style: TextStyle(color: Color(0xFF23223A))),
             ],
           ),
         ),
@@ -86,7 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // ---------- Carousel ----------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -138,7 +137,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                     ),
-                                    icon: const Icon(Icons.arrow_forward_ios, size: 14),
+                                    icon: const Icon(Icons.arrow_forward_ios,
+                                        size: 14),
                                     label: Text(banner['button']!),
                                     onPressed: () {},
                                   ),
@@ -192,132 +192,135 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-SingleChildScrollView(
-  scrollDirection: Axis.horizontal,
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child: Row(
-    children: [
-      _CategoryCard(
-        label: 'Birthday Parties',
-        imageAsset: 'assets/images/cake.jpg',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailsPage(
-                categoryName: 'Birthday Parties',
-                imageAsset: 'assets/images/cake.jpg',
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  _CategoryCard(
+                    label: 'Birthday Parties',
+                    imageAsset: 'assets/images/cake.jpg',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailsPage(
+                            categoryName: 'Birthday Parties',
+                            imageAsset: 'assets/images/cake.jpg',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _CategoryCard(
+                    label: 'Wedding Ceremony',
+                    imageAsset: 'assets/images/wedding.jpg',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailsPage(
+                            categoryName: 'Wedding Ceremony',
+                            imageAsset: 'assets/images/wedding.jpg',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // ... do this for all other categories
+                  _CategoryCard(
+                    label: 'Cocktail Parties',
+                    imageAsset: 'assets/images/cocktail.jpg',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailsPage(
+                            categoryName: 'Cocktail Parties',
+                            imageAsset: 'assets/images/cocktail.jpg',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _CategoryCard(
+                    label: 'Fashion Shows',
+                    imageAsset: 'assets/images/fashion.jpg',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailsPage(
+                            categoryName: 'Fashion Show',
+                            imageAsset: 'assets/images/fashion.jpg',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  _CategoryCard(
+                    label: 'Baby Showers',
+                    imageAsset: 'assets/images/babyshower.jpeg',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailsPage(
+                            categoryName: 'Baby Showers',
+                            imageAsset: 'assets/images/babyshower.jpeg',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _CategoryCard(
+                    label: 'Farewell Parties',
+                    imageAsset: 'assets/images/farewell.jpg',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailsPage(
+                            categoryName: 'Farewall Parties',
+                            imageAsset: 'assets/images/farewell.jpg',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _CategoryCard(
+                    label: 'Conference Events',
+                    imageAsset: 'assets/images/conference.jpeg',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryDetailsPage(
+                            categoryName: 'Conference Events',
+                            imageAsset: 'assets/images/conference.jpeg',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-          );
-        },
-      ),
-      _CategoryCard(
-        label: 'Wedding Ceremony',
-        imageAsset: 'assets/images/wedding.jpg',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailsPage(
-                categoryName: 'Wedding Ceremony',
-                imageAsset: 'assets/images/wedding.jpg',
-              ),
-            ),
-          );
-        },
-      ),
-      // ... do this for all other categories
-       _CategoryCard(
-        label: 'Cocktail Parties',
-        imageAsset: 'assets/images/cocktail.jpg',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailsPage(
-                categoryName: 'Cocktail Parties',
-                imageAsset: 'assets/images/cocktail.jpg',
-              ),
-            ),
-          );
-        },
-      ),
- _CategoryCard(
-        label: 'Fashion Shows',
-        imageAsset: 'assets/images/fashion.jpg',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailsPage(
-                categoryName: 'Fashion Show',
-                imageAsset: 'assets/images/fashion.jpg',
-              ),
-            ),
-          );
-        },
-      ),
-    
- _CategoryCard(
-        label: 'Baby Showers',
-        imageAsset: 'assets/images/babyshower.jpeg',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailsPage(
-                categoryName: 'Baby Showers',
-                imageAsset: 'assets/images/babyshower.jpeg',
-              ),
-            ),
-          );
-        },
-      ),
-       _CategoryCard(
-        label: 'Farewell Parties',
-        imageAsset: 'assets/images/farewell.jpg',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailsPage(
-                categoryName: 'Farewall Parties',
-                imageAsset: 'assets/images/farewell.jpg',
-              ),
-            ),
-          );
-        },
-      ),
-       _CategoryCard(
-        label: 'Conference Events',
-        imageAsset: 'assets/images/conference.jpeg',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryDetailsPage(
-                categoryName: 'Conference Events',
-                imageAsset: 'assets/images/conference.jpeg',
-              ),
-            ),
-          );
-        },
-      ),
-      ],
-  ),
-),
             const SizedBox(height: 24),
 
             // ---------- Top Venues ----------
-            _SectionHeader(title: 'Top Venues',
-            onViewAll: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AllVenuesPage(),
-                ),
-              );
-            },),
+            _SectionHeader(
+              title: 'Top Venues',
+              onViewAll: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AllVenuesPage(),
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: 12),
             SizedBox(
               height: 240,
@@ -354,7 +357,7 @@ SingleChildScrollView(
 
             const SizedBox(height: 24),
 
-                        const Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
                 'Decoration',
@@ -367,15 +370,16 @@ SingleChildScrollView(
             ),
 
             // ---------- NEW: Top Stages ----------
-            _SectionHeader(title: 'Stages',
+            _SectionHeader(
+              title: 'Stages',
               onViewAll: () {
-            Navigator.push(
-           context,
-           MaterialPageRoute(
-          builder: (context) => AllStagesPage(),
-          ),
-         );
-         },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AllStagesPage(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 12),
             SizedBox(
@@ -411,18 +415,19 @@ SingleChildScrollView(
               ),
             ),
 
-const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             // ---------- NEW: Mandap Decorations ----------
-            _SectionHeader(title: 'Mandap Decorations',
+            _SectionHeader(
+              title: 'Mandap Decorations',
               onViewAll: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AllMandapsPage(),
-      ),
-    );
-  },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AllMandapsPage(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 12),
             SizedBox(
@@ -461,15 +466,17 @@ const SizedBox(height: 24),
             const SizedBox(height: 24),
 
             // ---------- NEW: Entrance Gate Decorations ----------
-            _SectionHeader(title: 'Entrance Gate Decorations',
+            _SectionHeader(
+              title: 'Entrance Gate Decorations',
               onViewAll: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ViewAllGatePage(),
-      ),
-    );
-  },),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewAllGatePage(),
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: 12),
             SizedBox(
               height: 240,
@@ -507,16 +514,17 @@ const SizedBox(height: 24),
             const SizedBox(height: 24),
 
             // ---------- NEW: Balloon Decorations ----------
-            _SectionHeader(title: 'Balloon Decorations',
+            _SectionHeader(
+              title: 'Balloon Decorations',
               onViewAll: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ViewAllDecorationPage(),
-      ),
-    );
-  },
-  ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewAllDecorationPage(),
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: 12),
             SizedBox(
               height: 240,
@@ -550,7 +558,6 @@ const SizedBox(height: 24),
                 ],
               ),
             ),
-
           ], // end Column children
         ),
       ),
@@ -566,11 +573,10 @@ const SizedBox(height: 24),
           if (index == 0) {
             Navigator.pushReplacementNamed(context, '/home');
           } else if (index == 1) {
-           Navigator.pushReplacementNamed(context, '/search');
+            Navigator.pushReplacementNamed(context, '/search');
           } else if (index == 2) {
             Navigator.pushReplacementNamed(context, '/booking');
-          }
-          else if (index == 3) {
+          } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/favourites');
           } else if (index == 4) {
             Navigator.pushReplacementNamed(context, '/profile');
@@ -580,8 +586,10 @@ const SizedBox(height: 24),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Bookings'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favourites'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month), label: 'Bookings'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_border), label: 'Favourites'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
@@ -603,7 +611,8 @@ class _SectionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              style:
+                  const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
           TextButton(
             onPressed: onViewAll,
             child: const Text(
@@ -629,13 +638,10 @@ class _CategoryCard extends StatelessWidget {
   const _CategoryCard({
     required this.label,
     required this.imageAsset,
-    this.onTap, 
+    this.onTap,
     String? heroTag,
-    Key? key,
     // optional
-  })
-  : heroTag = heroTag ?? imageAsset,
-        super(key: key);
+  })  : heroTag = heroTag ?? imageAsset;
 
   @override
   Widget build(BuildContext context) {
@@ -644,7 +650,8 @@ class _CategoryCard extends StatelessWidget {
       child: Column(
         children: [
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 2,
             child: SizedBox(
               width: 70,
@@ -652,11 +659,11 @@ class _CategoryCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Hero(
-                tag: heroTag,
-                child: Image.asset(imageAsset, fit: BoxFit.cover),
+                  tag: heroTag,
+                  child: Image.asset(imageAsset, fit: BoxFit.cover),
+                ),
               ),
             ),
-          ),
           ),
           const SizedBox(height: 6),
           SizedBox(
@@ -676,7 +683,6 @@ class _CategoryCard extends StatelessWidget {
     );
   }
 }
-
 
 class _VenueCard extends StatelessWidget {
   final String image, name, location, price, halls, capacity;
@@ -700,7 +706,7 @@ class _VenueCard extends StatelessWidget {
       capacity: capacity,
       buttonLabel: 'Show Details',
       onButtonPressed: () {
- Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => VenueDetailsPage(
@@ -712,7 +718,7 @@ class _VenueCard extends StatelessWidget {
               capacity: capacity,
             ),
           ),
- ); 
+        );
       },
     );
   }
@@ -740,7 +746,7 @@ class _StageCard extends StatelessWidget {
       capacity: capacity,
       buttonLabel: 'Select',
       onButtonPressed: () {
-Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => VenueDetailsPage(
@@ -752,7 +758,8 @@ Navigator.push(
               capacity: capacity,
             ),
           ),
- );       },
+        );
+      },
     );
   }
 }
@@ -778,8 +785,7 @@ class _CardBase extends StatefulWidget {
 }
 
 class _CardBaseState extends State<_CardBase> {
-  bool isFavourite= false;
-
+  bool isFavourite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -815,9 +821,7 @@ class _CardBaseState extends State<_CardBase> {
                       radius: 16,
                       backgroundColor: Colors.white.withOpacity(0.7),
                       child: Icon(
-                        isFavourite
-                            ? Icons.favorite
-                            : Icons.favorite_border,
+                        isFavourite ? Icons.favorite : Icons.favorite_border,
                         color: isFavourite ? Colors.red : Colors.black54,
                         size: 18,
                       ),
@@ -848,10 +852,12 @@ class _CardBaseState extends State<_CardBase> {
                       const Spacer(),
                       const Icon(Icons.meeting_room,
                           size: 14, color: Colors.purple),
-                      Text(' ${widget.halls}', style: const TextStyle(fontSize: 13)),
+                      Text(' ${widget.halls}',
+                          style: const TextStyle(fontSize: 13)),
                       const Spacer(),
                       const Icon(Icons.people, size: 14, color: Colors.blue),
-                      Text(' ${widget.capacity}', style: const TextStyle(fontSize: 13)),
+                      Text(' ${widget.capacity}',
+                          style: const TextStyle(fontSize: 13)),
                     ],
                   ),
                 ],
@@ -883,4 +889,3 @@ class _CardBaseState extends State<_CardBase> {
     );
   }
 }
- 

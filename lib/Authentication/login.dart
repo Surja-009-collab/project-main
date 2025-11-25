@@ -1,5 +1,9 @@
+import 'dart:async'; // For timeout functionality
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project/Authentication/auth_state.dart';
+import 'package:project/services/analytics_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,10 +14,29 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   int _currentIndex = 0;
+  final AnalyticsService analytics = AnalyticsService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize analytics if needed
+    try {
+      analytics.logScreenView("LoginScreen");
+    } catch (e) {
+      debugPrint('Analytics error: $e');
+    }
+
+    // Check if user is already logged in
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (FirebaseAuth.instance.currentUser != null) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -22,11 +45,90 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _signIn() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Handle regular sign-in logic, e.g., authenticate via Firebase or your backend
+  bool _isLoading = false;
+
+  Future<void> _signIn() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    try {
+      // First, try to sign in with email and password
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      // Check if email is verified
+      if (userCredential.user != null && !userCredential.user!.emailVerified) {
+        if (!mounted) return;
+        await FirebaseAuth.instance
+            .signOut(); // Sign out if email is not verified
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please verify your email before logging in.'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        Navigator.pushReplacementNamed(context, '/verify_email');
+        return;
+      }
+
+      if (!mounted) return;
+
+      // If we get here, login was successful
       AuthState.login();
       Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      String message = 'An error occurred. Please try again.';
+      if (e.code == 'user-not-found') {
+        message = 'No user found with this email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Incorrect password. Please try again.';
+      } else if (e.code == 'too-many-requests') {
+        message = 'Too many attempts. Please try again later.';
+      } else if (e.code == 'user-disabled') {
+        message = 'This account has been disabled.';
+      } else if (e.code == 'invalid-email') {
+        message = 'The email address is not valid.';
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } on TimeoutException {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Connection timeout. Please try again.'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -146,18 +248,18 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     TextButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                           Colors.transparent,
                         ),
-                        foregroundColor: MaterialStateProperty.all(
+                        foregroundColor: WidgetStateProperty.all(
                           const Color(0xFFE573B7),
                         ),
-                        padding: MaterialStateProperty.all(EdgeInsets.zero),
-                        minimumSize: MaterialStateProperty.all(
+                        padding: WidgetStateProperty.all(EdgeInsets.zero),
+                        minimumSize: WidgetStateProperty.all(
                           const Size(0, 0),
                         ),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        overlayColor: MaterialStateProperty.all(
+                        overlayColor: WidgetStateProperty.all(
                           Colors.transparent,
                         ), // No grey on tap
                       ),
@@ -177,8 +279,18 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 12),
                 // Sign In Button
                 _GradientButton(
-                  onPressed: _signIn,
-                  child: const Text('Sign In'),
+                  onPressed: _isLoading ? null : _signIn,
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('Sign In'),
                 ),
                 const SizedBox(height: 8),
                 TextButton(
@@ -271,57 +383,41 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class _GradientButton extends StatefulWidget {
-  final VoidCallback onPressed;
+class _GradientButton extends StatelessWidget {
+  final VoidCallback? onPressed;
   final Widget child;
 
   const _GradientButton({required this.onPressed, required this.child});
 
   @override
-  State<_GradientButton> createState() => _GradientButtonState();
-}
-
-class _GradientButtonState extends State<_GradientButton> {
-  bool _isHovering = false;
-
-  @override
   Widget build(BuildContext context) {
-    final gradient = const LinearGradient(
-      colors: [
-        Color(0xFF8F5CFF),
-        Color.fromARGB(182, 127, 34, 225),
-      ], // Purple shades
-    );
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: _isHovering ? null : gradient,
-          color: _isHovering ? Colors.white : null,
-          borderRadius: BorderRadius.circular(8),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF8F5CFF),
+            Color(0xFF7F22E1),
+          ],
         ),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-            foregroundColor:
-                _isHovering ? const Color(0xFF08182B) : Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
-          onPressed: widget.onPressed,
-          child: widget.child,
+          textStyle: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+          foregroundColor: Colors.white,
         ),
+        child: child,
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project/screens/venue_details.dart';
 
 class AllVenuesPage extends StatefulWidget {
-  const AllVenuesPage({Key? key}) : super(key: key);
+  const AllVenuesPage({super.key});
 
   @override
   State<AllVenuesPage> createState() => _AllVenuesPageState();

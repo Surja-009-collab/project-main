@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/Authentication/auth_state.dart';
 import 'package:project/screens/bookvenue.dart';
 
 class VenueDetailsPage extends StatefulWidget {
@@ -51,7 +52,7 @@ class _VenueDetailsPageState extends State<VenueDetailsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-Stack(
+            Stack(
               children: [
                 // Image with rounded corners
                 ClipRRect(
@@ -93,20 +94,22 @@ Stack(
                   ),
                 ),
               ],
-            ),            Padding(
+            ),
+            Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.name,
-                      style:
-                          const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       const Icon(Icons.location_on, color: Colors.red),
                       const SizedBox(width: 4),
-                      Text(widget.location, style: const TextStyle(fontSize: 16)),
+                      Text(widget.location,
+                          style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -121,25 +124,32 @@ Stack(
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
-                    child: 
-                   ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    minimumSize: const Size(double.infinity, 50),
-    backgroundColor: const Color(0xFF8F5CFF),
-    foregroundColor: Colors.white,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  ),
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VenueBookingPage(),
-      ),
-    );
-  },
-  child: const Text("Book Now", style: TextStyle(fontSize: 18,)),
-),
-
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        backgroundColor: const Color(0xFF8F5CFF),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: () {
+                        if (AuthState.isLoggedIn.value) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const VenueBookingPage(),
+                            ),
+                          );
+                        } else {
+                          // Not logged in: redirect to login page
+                          Navigator.pushReplacementNamed(context, '/login');
+                        }
+                      },
+                      child: const Text("Book Now",
+                          style: TextStyle(
+                            fontSize: 18,
+                          )),
+                    ),
                   )
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/Authentication/auth_state.dart';
 import 'package:project/screens/bookvenue.dart';
 
 class DecorationDetailsPage extends StatefulWidget {
@@ -50,7 +51,8 @@ class _DecorationDetailsPageState extends State<DecorationDetailsPage> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
+                  borderRadius:
+                      const BorderRadius.vertical(bottom: Radius.circular(12)),
                   child: Image.asset(
                     widget.image,
                     width: double.infinity,
@@ -91,7 +93,8 @@ class _DecorationDetailsPageState extends State<DecorationDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.name,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Text("📍 Location: ${widget.location}",
                       style: const TextStyle(fontSize: 16)),
@@ -112,14 +115,17 @@ class _DecorationDetailsPageState extends State<DecorationDetailsPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
                       ),
-                     onPressed: () {
-                     Navigator.push(
-                     context,
-                     MaterialPageRoute(
-                     builder: (context) => VenueBookingPage(),
-                     ),
-                  );
-                  },
+                      onPressed: () {
+                        if (AuthState.isLoggedIn.value) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const VenueBookingPage()),
+                          );
+                        } else {
+                          Navigator.pushReplacementNamed(context, '/login');
+                        }
+                      },
                       child: const Text("Book Decoration",
                           style: TextStyle(fontSize: 18)),
                     ),

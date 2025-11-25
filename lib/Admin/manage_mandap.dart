@@ -87,7 +87,8 @@ class _ManageMandapsPageState extends State<ManageMandapsPage> {
 
           return Card(
             margin: const EdgeInsets.symmetric(vertical: 8),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +96,8 @@ class _ManageMandapsPageState extends State<ManageMandapsPage> {
                 Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(12)),
                       child: Image.asset(
                         mandap["image"],
                         height: 180,
@@ -128,7 +130,9 @@ class _ManageMandapsPageState extends State<ManageMandapsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(mandap["name"], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(mandap["name"],
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                       Text("💰 Price: ₹${mandap["price"]}"),
                       Text("🏛️ Halls: ${mandap["halls"]}"),
                       Text("👥 Capacity: ${mandap["capacity"]}"),
@@ -156,11 +160,14 @@ class _ManageMandapsPageState extends State<ManageMandapsPage> {
                           Row(
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () => showAddOrUpdateDialog(context, index),
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () =>
+                                    showAddOrUpdateDialog(context, index),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () => deleteMandap(index),
                               ),
                             ],
@@ -183,42 +190,101 @@ class _ManageMandapsPageState extends State<ManageMandapsPage> {
     final mandap = isUpdate
         ? mandaps[index]
         : {"name": "", "price": 0, "halls": 0, "capacity": 0, "image": ""};
-
     final nameController = TextEditingController(text: mandap["name"]);
-    final priceController = TextEditingController(text: mandap["price"].toString());
-    final hallsController = TextEditingController(text: mandap["halls"].toString());
-    final capacityController = TextEditingController(text: mandap["capacity"].toString());
+    final priceController =
+        TextEditingController(text: mandap["price"].toString());
+    final hallsController =
+        TextEditingController(text: mandap["halls"].toString());
+    final capacityController =
+        TextEditingController(text: mandap["capacity"].toString());
     final imageController = TextEditingController(text: mandap["image"]);
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(isUpdate ? "Update Mandap" : "Add Mandap"),
         content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(controller: nameController, decoration: const InputDecoration(labelText: "Name")),
-              TextField(controller: priceController, decoration: const InputDecoration(labelText: "Price"), keyboardType: TextInputType.number),
-              TextField(controller: hallsController, decoration: const InputDecoration(labelText: "Halls"), keyboardType: TextInputType.number),
-              TextField(controller: capacityController, decoration: const InputDecoration(labelText: "Capacity"), keyboardType: TextInputType.number),
-              TextField(controller: imageController, decoration: const InputDecoration(labelText: "Image Path")),
-            ],
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: "Name"),
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Please enter a name'
+                        : null),
+                TextFormField(
+                    controller: priceController,
+                    decoration: const InputDecoration(labelText: "Price"),
+                    keyboardType: TextInputType.number,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Please enter a price';
+                      }
+                      final n = int.tryParse(v);
+                      if (n == null || n <= 0) {
+                        return 'Please enter a valid positive number';
+                      }
+                      return null;
+                    }),
+                TextFormField(
+                    controller: hallsController,
+                    decoration: const InputDecoration(labelText: "Halls"),
+                    keyboardType: TextInputType.number,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Please enter number of halls';
+                      }
+                      final n = int.tryParse(v);
+                      if (n == null || n < 0) {
+                        return 'Please enter a valid number';
+                      }
+                      return null;
+                    }),
+                TextFormField(
+                    controller: capacityController,
+                    decoration: const InputDecoration(labelText: "Capacity"),
+                    keyboardType: TextInputType.number,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Please enter capacity';
+                      }
+                      final n = int.tryParse(v);
+                      if (n == null || n <= 0) {
+                        return 'Please enter a valid positive number';
+                      }
+                      return null;
+                    }),
+                TextFormField(
+                    controller: imageController,
+                    decoration: const InputDecoration(labelText: "Image Path"),
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Please provide an image path'
+                        : null),
+              ],
+            ),
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel")),
           ElevatedButton(
             onPressed: () {
+              if (!formKey.currentState!.validate()) return;
+
               final newMandap = {
-                "name": nameController.text,
-                "price": int.tryParse(priceController.text) ?? 0,
-                "halls": int.tryParse(hallsController.text) ?? 0,
-                "capacity": int.tryParse(capacityController.text) ?? 0,
-                "image": imageController.text,
+                "name": nameController.text.trim(),
+                "price": int.parse(priceController.text.trim()),
+                "halls": int.parse(hallsController.text.trim()),
+                "capacity": int.parse(capacityController.text.trim()),
+                "image": imageController.text.trim(),
               };
 
               if (isUpdate) {
-                updateMandap(index!, newMandap);
+                updateMandap(index, newMandap);
               } else {
                 addMandap(newMandap);
               }

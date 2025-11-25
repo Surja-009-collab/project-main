@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project/screens/mandap/mandap_details.dart';
 
 class AllMandapsPage extends StatefulWidget {
-  const AllMandapsPage({Key? key}) : super(key: key);
+  const AllMandapsPage({super.key});
 
   @override
   State<AllMandapsPage> createState() => _AllMandapsPageState();

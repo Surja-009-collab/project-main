@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -66,11 +67,42 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _signUp() {
-    if (_formKey.currentState!.validate() && _agreeTerms) {
-      // TODO: Handle sign up logic
+  Future<void> _signUp() async {
+    if (!_formKey.currentState!.validate() || !_agreeTerms) {
+      setState(() {});
+      return;
     }
-    setState(() {}); // To update checkbox error if unchecked
+    final name = _fullNameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      await AuthService.instance.register(
+        email: email,
+        password: password,
+        displayName: name,
+      );
+
+      if (context.mounted) Navigator.of(context).pop();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+                  'Verification email sent. Please verify, then sign in.')),
+        );
+        Navigator.pushReplacementNamed(context, '/verify_email');
+      }
+    } catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration failed: $e')),
+      );
+    }
   }
 
   @override
@@ -336,15 +368,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     TextButton(
                       style: ButtonStyle(
-                        padding: MaterialStateProperty.all(EdgeInsets.zero),
-                        minimumSize: MaterialStateProperty.all(
+                        padding: WidgetStateProperty.all(EdgeInsets.zero),
+                        minimumSize: WidgetStateProperty.all(
                           const Size(0, 0),
                         ),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        foregroundColor: MaterialStateProperty.all(
+                        foregroundColor: WidgetStateProperty.all(
                           Color(0xFFE573B7),
                         ),
-                        overlayColor: MaterialStateProperty.all(
+                        overlayColor: WidgetStateProperty.all(
                           Colors.transparent,
                         ),
                       ),

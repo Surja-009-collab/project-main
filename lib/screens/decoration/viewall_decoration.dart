@@ -10,13 +10,13 @@ class ViewAllDecorationPage extends StatefulWidget {
   final String? capacity;
 
   const ViewAllDecorationPage({
-    Key? key,
+    super.key,
     this.image,
     this.name,
     this.location,
     this.price,
     this.capacity,
-  }) : super(key: key);
+  });
 
   @override
   State<ViewAllDecorationPage> createState() => _ViewAllDecorationPageState();

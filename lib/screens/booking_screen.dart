@@ -9,7 +9,7 @@ class BookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+        final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     // Dummy booking data
     final bookings = [
       {
@@ -39,7 +39,7 @@ class BookingPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: scaffoldKey,
       drawer: const AppDrawer(
 
       ),
@@ -65,7 +65,7 @@ class BookingPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.menu, color: Colors.black87),
             onPressed: () {
-                _scaffoldKey.currentState?.openDrawer();
+                scaffoldKey.currentState?.openDrawer();
             },
           ),
           const SizedBox(width: 8),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/Authentication/auth_state.dart';
 import 'package:project/screens/bookvenue.dart';
 
 class GateDetailsPage extends StatelessWidget {
@@ -58,7 +59,8 @@ class GateDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Text("📍 Location: $location",
                       style: const TextStyle(fontSize: 16)),
@@ -76,17 +78,22 @@ class GateDetailsPage extends StatelessWidget {
                         minimumSize: const Size(double.infinity, 50),
                         backgroundColor: const Color(0xFF8F5CFF),
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                         context,
-                         MaterialPageRoute(
-                         builder: (context) => VenueBookingPage(),
-                         ),
-                      );
-                   },
-                      child: const Text("Book Gate", style: TextStyle(fontSize: 18)),
+                        if (AuthState.isLoggedIn.value) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const VenueBookingPage()),
+                          );
+                        } else {
+                          Navigator.pushReplacementNamed(context, '/login');
+                        }
+                      },
+                      child: const Text("Book Gate",
+                          style: TextStyle(fontSize: 18)),
                     ),
                   )
                 ],

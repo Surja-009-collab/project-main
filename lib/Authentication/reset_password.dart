@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/services/forgot_password_service.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -22,10 +23,45 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     super.dispose();
   }
 
-  void _updatePassword() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Handle password reset logic
+  Future<void> _updatePassword() async {
+    if (!_formKey.currentState!.validate()) return;
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    final email = (args != null ? args['email'] : null) as String?;
+    final otp = (args != null ? args['otp'] : null) as String?;
+    final newPassword = _newPasswordController.text;
+
+    if (email == null || otp == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Missing OTP context. Please request a new OTP.')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      await ForgotPasswordService.instance.verifyOtpAndReset(
+        email: email,
+        otp: otp,
+        newPassword: newPassword,
+      );
+      if (mounted) Navigator.of(context).pop();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password updated. Please sign in.')),
+      );
       Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      if (mounted) Navigator.of(context).pop();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update password: $e')),
+      );
     }
   }
 
@@ -172,13 +208,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 // Back to Login
                 TextButton(
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
-                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
+                    minimumSize: WidgetStateProperty.all(const Size(0, 0)),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    foregroundColor: MaterialStateProperty.all(
+                    foregroundColor: WidgetStateProperty.all(
                       Color(0xFFE573B7),
                     ),
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                    overlayColor: WidgetStateProperty.all(Colors.transparent),
                   ),
                   onPressed: () {
                     Navigator.pushReplacementNamed(context, '/login');

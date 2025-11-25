@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/Authentication/auth_state.dart';
 import 'package:project/screens/bookvenue.dart';
 
 class MandapDetailsPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class MandapDetailsPage extends StatefulWidget {
 }
 
 class _MandapDetailsPageState extends State<MandapDetailsPage> {
-bool isFavorite = false; // Track favorite state
+  bool isFavorite = false; // Track favorite state
 
   void toggleFavorite() {
     setState(() {
@@ -37,6 +38,7 @@ bool isFavorite = false; // Track favorite state
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +52,7 @@ bool isFavorite = false; // Track favorite state
         child: Column(
           children: [
             Stack(
-    children: [
+              children: [
                 // Image with rounded corners
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
@@ -98,11 +100,12 @@ bool isFavorite = false; // Track favorite state
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.name,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Text("💰 Price: ₹ ${widget.price}",
                       style: const TextStyle(fontSize: 16)),
-                              const SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text("🏛️ Number of Halls: ${widget.halls}",
                       style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 8),
@@ -116,17 +119,23 @@ bool isFavorite = false; // Track favorite state
                         minimumSize: const Size(double.infinity, 50),
                         backgroundColor: const Color(0xFF8F5CFF),
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
-                     onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VenueBookingPage(),
-      ),
-    );
-  },
-                      child: const Text("Book Mandap", style: TextStyle(fontSize: 18)),
+                      onPressed: () {
+                        if (AuthState.isLoggedIn.value) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const VenueBookingPage(),
+                            ),
+                          );
+                        } else {
+                          Navigator.pushReplacementNamed(context, '/login');
+                        }
+                      },
+                      child: const Text("Book Mandap",
+                          style: TextStyle(fontSize: 18)),
                     ),
                   )
                 ],

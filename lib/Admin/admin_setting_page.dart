@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:project/Authentication/auth_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +26,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       nameController.text = prefs.getString('admin_name') ?? 'Admin User';
-      emailController.text = prefs.getString('admin_email') ?? 'admin@email.com';
+      emailController.text =
+          prefs.getString('admin_email') ?? 'admin@email.com';
       passwordController.text = prefs.getString('admin_password') ?? '';
       darkMode = prefs.getBool('dark_mode') ?? false;
       notificationsEnabled = prefs.getBool('notifications') ?? true;
@@ -109,14 +109,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SwitchListTile(
-            title: const Text('Dark Mode'),
-            value: darkMode,
-            onChanged: (val) {
-              setState(() => darkMode = val);
-            },
-            secondary: const Icon(Icons.dark_mode),
-          ),
-          SwitchListTile(
             title: const Text('Enable Notifications'),
             value: notificationsEnabled,
             onChanged: (val) {
@@ -146,13 +138,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text('Logout'),
             onTap: () {
-                          AuthState.adminLogout();
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            '/admin_login',
-                            (route) => false,
-                          );
-                        },
+              AuthState.adminLogout();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/admin_login',
+                (route) => false,
+              );
+            },
           ),
         ],
       ),

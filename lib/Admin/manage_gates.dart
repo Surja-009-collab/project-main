@@ -78,7 +78,8 @@ class _ManageGatesPageState extends State<ManageGatesPage> {
 
           return Card(
             margin: const EdgeInsets.symmetric(vertical: 8),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +87,8 @@ class _ManageGatesPageState extends State<ManageGatesPage> {
                 Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(12)),
                       child: Image.asset(
                         gate["image"],
                         height: 180,
@@ -119,7 +121,9 @@ class _ManageGatesPageState extends State<ManageGatesPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(gate["name"], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(gate["name"],
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                       Text("📍 ${gate["location"]}"),
                       Text("💰 Price: ₹${gate["price"]}"),
                       Text("👥 Capacity: ${gate["capacity"]}"),
@@ -147,11 +151,14 @@ class _ManageGatesPageState extends State<ManageGatesPage> {
                           Row(
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () => showAddOrUpdateDialog(context, index),
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () =>
+                                    showAddOrUpdateDialog(context, index),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () => deleteGate(index),
                               ),
                             ],
@@ -174,42 +181,92 @@ class _ManageGatesPageState extends State<ManageGatesPage> {
     final gate = isUpdate
         ? gates[index]
         : {"name": "", "location": "", "price": 0, "capacity": 0, "image": ""};
-
     final nameController = TextEditingController(text: gate["name"]);
     final locationController = TextEditingController(text: gate["location"]);
-    final priceController = TextEditingController(text: gate["price"].toString());
-    final capacityController = TextEditingController(text: gate["capacity"].toString());
+    final priceController =
+        TextEditingController(text: gate["price"].toString());
+    final capacityController =
+        TextEditingController(text: gate["capacity"].toString());
     final imageController = TextEditingController(text: gate["image"]);
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(isUpdate ? "Update Gate" : "Add Gate"),
         content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(controller: nameController, decoration: const InputDecoration(labelText: "Name")),
-              TextField(controller: locationController, decoration: const InputDecoration(labelText: "Location")),
-              TextField(controller: priceController, decoration: const InputDecoration(labelText: "Price"), keyboardType: TextInputType.number),
-              TextField(controller: capacityController, decoration: const InputDecoration(labelText: "Capacity"), keyboardType: TextInputType.number),
-              TextField(controller: imageController, decoration: const InputDecoration(labelText: "Image Path")),
-            ],
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: "Name"),
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Please enter a name'
+                        : null),
+                TextFormField(
+                    controller: locationController,
+                    decoration: const InputDecoration(labelText: "Location"),
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Please enter a location'
+                        : null),
+                TextFormField(
+                    controller: priceController,
+                    decoration: const InputDecoration(labelText: "Price"),
+                    keyboardType: TextInputType.number,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Please enter a price';
+                      }
+                      final n = int.tryParse(v);
+                      if (n == null || n <= 0) {
+                        return 'Please enter a valid positive number';
+                      }
+                      return null;
+                    }),
+                TextFormField(
+                    controller: capacityController,
+                    decoration: const InputDecoration(labelText: "Capacity"),
+                    keyboardType: TextInputType.number,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Please enter capacity';
+                      }
+                      final n = int.tryParse(v);
+                      if (n == null || n <= 0) {
+                        return 'Please enter a valid positive number';
+                      }
+                      return null;
+                    }),
+                TextFormField(
+                    controller: imageController,
+                    decoration: const InputDecoration(labelText: "Image Path"),
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Please provide an image path'
+                        : null),
+              ],
+            ),
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel")),
           ElevatedButton(
             onPressed: () {
+              if (!formKey.currentState!.validate()) return;
+
               final newGate = {
-                "name": nameController.text,
-                "location": locationController.text,
-                "price": int.tryParse(priceController.text) ?? 0,
-                "capacity": int.tryParse(capacityController.text) ?? 0,
-                "image": imageController.text,
+                "name": nameController.text.trim(),
+                "location": locationController.text.trim(),
+                "price": int.parse(priceController.text.trim()),
+                "capacity": int.parse(capacityController.text.trim()),
+                "image": imageController.text.trim(),
               };
 
               if (isUpdate) {
-                updateGate(index!, newGate);
+                updateGate(index, newGate);
               } else {
                 addGate(newGate);
               }

@@ -1,6 +1,5 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:project/services/forgot_password_service.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -10,9 +9,9 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  int _currentIndex = 0;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  int _currentIndex = 0;
 
   @override
   void dispose() {
@@ -20,10 +19,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     super.dispose();
   }
 
-  void _resetPassword() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement reset password logic (send OTP)
-      Navigator.pushReplacementNamed(context, '/reset_password');
+  Future<void> _resetPassword() async {
+    if (!_formKey.currentState!.validate()) return;
+    final email = _emailController.text.trim();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      final otp = await ForgotPasswordService.instance.requestOtp(email);
+      if (context.mounted) Navigator.of(context).pop();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  otp != null ? 'OTP (demo): $otp' : 'OTP sent to your email')),
+        );
+        Navigator.pushReplacementNamed(
+          context,
+          '/verify_otp',
+          arguments: {'email': email},
+        );
+      }
+    } catch (e) {
+      if (context.mounted) Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to send OTP: $e')),
+      );
     }
   }
 
@@ -178,7 +201,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
         ),
       ),
-       bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         selectedItemColor: const Color(0xFF8F5CFF),
@@ -189,11 +212,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           if (index == 0) {
             Navigator.pushReplacementNamed(context, '/home');
           } else if (index == 1) {
-           Navigator.pushReplacementNamed(context, '/search');
+            Navigator.pushReplacementNamed(context, '/search');
           } else if (index == 2) {
             Navigator.pushReplacementNamed(context, '/booking');
-          }
-          else if (index == 3) {
+          } else if (index == 3) {
             Navigator.pushReplacementNamed(context, '/favourites');
           } else if (index == 4) {
             Navigator.pushReplacementNamed(context, '/profile');
@@ -203,8 +225,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Bookings'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favourites'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month), label: 'Bookings'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_border), label: 'Favourites'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
@@ -258,9 +282,8 @@ class _GradientButtonState extends State<_GradientButton> {
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
-            foregroundColor: _isHovering
-                ? const Color(0xFF08182B)
-                : Colors.white,
+            foregroundColor:
+                _isHovering ? const Color(0xFF08182B) : Colors.white,
           ),
           onPressed: widget.onPressed,
           child: widget.child,

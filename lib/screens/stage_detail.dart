@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/Authentication/auth_state.dart';
 import 'package:project/screens/bookvenue.dart';
 
 class StageDetailsPage extends StatefulWidget {
@@ -35,7 +36,8 @@ class _StageDetailsPageState extends State<StageDetailsPage> {
           children: [
             Stack(
               children: [
-                Image.asset(widget.image, width: double.infinity, fit: BoxFit.cover),
+                Image.asset(widget.image,
+                    width: double.infinity, fit: BoxFit.cover),
                 Positioned(
                   top: 16,
                   right: 16,
@@ -67,21 +69,26 @@ class _StageDetailsPageState extends State<StageDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.name,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       const Icon(Icons.location_on, color: Colors.red),
                       const SizedBox(width: 4),
-                      Text(widget.location, style: const TextStyle(fontSize: 16)),
+                      Text(widget.location,
+                          style: const TextStyle(fontSize: 16)),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text("💰 Price: ₹ ${widget.price}", style: const TextStyle(fontSize: 16)),
+                  Text("💰 Price: ₹ ${widget.price}",
+                      style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 8),
-                  Text("🏛️ Number of Halls: ${widget.halls}", style: const TextStyle(fontSize: 16)),
+                  Text("🏛️ Number of Halls: ${widget.halls}",
+                      style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 8),
-                  Text("👥 Capacity: ${widget.capacity} people", style: const TextStyle(fontSize: 16)),
+                  Text("👥 Capacity: ${widget.capacity} people",
+                      style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
@@ -90,17 +97,28 @@ class _StageDetailsPageState extends State<StageDetailsPage> {
                         minimumSize: const Size(double.infinity, 50),
                         backgroundColor: const Color(0xFF8F5CFF),
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => VenueBookingPage(),
+                            builder: (context) {
+                              if (AuthState.isLoggedIn.value) {
+                                return const VenueBookingPage();
+                              }
+                              // If not logged in redirect to login page
+                              Future.microtask(() =>
+                                  Navigator.pushReplacementNamed(
+                                      context, '/login'));
+                              return const SizedBox.shrink();
+                            },
                           ),
                         );
                       },
-                      child: const Text("Book Stage", style: TextStyle(fontSize: 18)),
+                      child: const Text("Book Stage",
+                          style: TextStyle(fontSize: 18)),
                     ),
                   ),
                 ],
