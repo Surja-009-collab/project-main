@@ -1,98 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:project/Authentication/auth_state.dart';
 import 'package:project/screens/bookvenue.dart';
 
 class CategoryDetailsPage extends StatelessWidget {
-  final VoidCallback? onTap;
   final String categoryName;
   final String imageAsset;
-  final String heroTag;
 
   const CategoryDetailsPage({
-    Key? key,
-    this.onTap,
+    super.key,
     required this.categoryName,
     required this.imageAsset,
-    required this.heroTag,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.black87),
-          title: Text(
-            categoryName,
-            style: GoogleFonts.poppins(color: Colors.black87),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black87),
+        title: Text(
+          categoryName,
+          style: GoogleFonts.poppins(color: Colors.black87),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Banner
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    imageAsset,
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Banner
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  imageAsset,
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+            // Title + description
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    categoryName,
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ),
-
-              // Title + description
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      categoryName,
-                      style: GoogleFonts.poppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Explore the best $categoryName venues in your area. Find the perfect place for your next event.',
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey[600],
+                      fontSize: 14,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Explore the best $categoryName venues in your area. Find the perfect place for your next event.',
-                      style: GoogleFonts.poppins(
-                        color: Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              // Popular venues section
-              _buildSectionTitle('Popular Venues'),
-              _buildVenueList(),
+            // Popular venues section
+            _buildSectionTitle('Popular Venues'),
+            _buildVenueList(),
 
-              // Categories section
-              _buildSectionTitle('Categories'),
-              _buildCategoryGrid(),
+            // Categories section
+            _buildSectionTitle('Categories'),
+            _buildCategoryGrid(),
 
-              // Reviews section
-              _buildSectionTitle('Top Reviews'),
-              _buildReviewsList(),
+            // Reviews section
+            _buildSectionTitle('Top Reviews'),
+            _buildReviewsList(),
 
-              const SizedBox(height: 20),
-            ],
-          ),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );
@@ -152,7 +142,7 @@ class CategoryDetailsPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withValues(alpha: 0.1),
               spreadRadius: 1,
               blurRadius: 5,
               offset: const Offset(0, 2),
@@ -287,7 +277,7 @@ class CategoryDetailsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 2),
@@ -349,10 +339,10 @@ class _InfoCard extends StatelessWidget {
   final String text;
 
   const _InfoCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -365,7 +355,7 @@ class _InfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 2),

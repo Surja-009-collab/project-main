@@ -1,7 +1,6 @@
 // lib/screens/profile_page.dart
 import 'package:flutter/material.dart';
 import 'package:project/screens/edit_profile_page.dart';
-import 'package:provider/provider.dart';
 import 'package:project/services/user_profile_service.dart';
 import 'package:project/Authentication/auth_state.dart';
 import 'package:project/services/auth_service.dart';

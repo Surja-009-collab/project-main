@@ -1,12 +1,9 @@
 import 'dart:io' show Platform;
-import 'services/database_service.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-
-import 'repositories/booking_repository.dart';  // Add this import
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:project/Admin/admin_home.dart';
 import 'package:project/Authentication/admin_login.dart';
@@ -34,14 +31,11 @@ import 'package:project/screens/profile_page.dart';
 import 'package:project/screens/search_screen.dart';
 import 'package:project/screens/venue_page.dart';
 import 'package:project/screens/welcome_page.dart' show WelcomePage;
-import 'package:provider/provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'firebase_options.dart';
+import 'repositories/booking_repository.dart';
 import 'repositories/venue_repository.dart';
-
-
-// import 'package:project/screens/venue_details.dart';
+import 'services/database_service.dart';
 
 class RequireAuth extends StatelessWidget {
   final Widget child;
@@ -53,14 +47,14 @@ class RequireAuth extends StatelessWidget {
       valueListenable: AuthState.isLoggedIn,
       builder: (context, isLoggedIn, _) {
         if (isLoggedIn) return child;
-        
+
         // If not logged in, redirect to login
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (ModalRoute.of(context)?.isCurrent ?? true) {
             Navigator.pushReplacementNamed(context, '/login');
           }
         });
-        
+
         // Show loading indicator while redirecting
         return const Scaffold(
           body: Center(child: CircularProgressIndicator()),
@@ -68,7 +62,8 @@ class RequireAuth extends StatelessWidget {
       },
     );
   }
-} 
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -88,7 +83,9 @@ Future<void> main() async {
       providers: [
         Provider<DatabaseService>(create: (_) => DatabaseService()),
         Provider<VenueRepository>(create: (_) => VenueRepository()),
-        Provider<BookingRepository>(create: (_) => BookingRepository()),
+        ProxyProvider<DatabaseService, BookingRepository>(
+          update: (_, database, __) => BookingRepository(database),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -132,8 +129,6 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,
-      // home: EventifyHome(),
-      // Named routes for navigation
       routes: {
         '/home': (context) => const HomeScreen(),
         '/search': (context) => const SearchScreen(),
@@ -159,11 +154,8 @@ class MyApp extends StatelessWidget {
         '/admin_login': (context) => const AdminLoginPage(),
         '/admin_home': (context) => RequireAdmin(child: const AdminHomePage()),
         '/help_support': (context) => const HelpSupportScreen(),
-        // '/venue_details': (context) => const VenueDetailsPage(),
-        // '/logo': (context) => const EventifyScreen(),
       },
       home: const SplashToWelcome(),
-      // home: AdminHomePage(),
     );
   }
 }

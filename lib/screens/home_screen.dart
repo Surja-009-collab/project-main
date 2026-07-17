@@ -633,14 +633,13 @@ class _CategoryCard extends StatelessWidget {
   final String label;
   final String imageAsset;
   final VoidCallback? onTap;
-  final String heroTag; // Add this
+  final String heroTag;
 
   const _CategoryCard({
     required this.label,
     required this.imageAsset,
     this.onTap,
     String? heroTag,
-    // optional
   }) : heroTag = heroTag ?? imageAsset;
 
   @override
@@ -819,7 +818,7 @@ class _CardBaseState extends State<_CardBase> {
                     },
                     child: CircleAvatar(
                       radius: 16,
-                      backgroundColor: Colors.white.withOpacity(0.7),
+                      backgroundColor: Colors.white.withValues(alpha: 0.7),
                       child: Icon(
                         isFavourite ? Icons.favorite : Icons.favorite_border,
                         color: isFavourite ? Colors.red : Colors.black54,
