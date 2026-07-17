@@ -641,7 +641,7 @@ class _CategoryCard extends StatelessWidget {
     this.onTap,
     String? heroTag,
     // optional
-  })  : heroTag = heroTag ?? imageAsset;
+  }) : heroTag = heroTag ?? imageAsset;
 
   @override
   Widget build(BuildContext context) {
